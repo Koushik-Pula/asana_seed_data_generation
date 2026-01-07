@@ -1,4 +1,4 @@
-# Asana Data Generator (Enterprise Scale)
+# Asana Data Generator
 
 A robust synthetic data generator that simulates a B2B SaaS work-management
 platform (similar to Asana or Jira) at enterprise scale.

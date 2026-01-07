@@ -1,86 +1,161 @@
 # Asana Data Generator (Enterprise Scale)
 
-A robust synthetic data generator that simulates a B2B SaaS environment (like Asana or Jira) at scale. It generates a complete SQLite database containing an organizational hierarchy with **5,000+ users**, dynamic team structures, and realistic project workflows.
+A robust synthetic data generator that simulates a B2B SaaS work-management
+platform (similar to Asana or Jira) at enterprise scale.
+
+It generates a fully populated SQLite database containing an organizational
+hierarchy with 5,000+ users, dynamic team structures, and realistic project
+workflows.
+
 
 ## Key Features
 
-* **Enterprise Scaling:** Automatically calculates organizational structure (Squads, Departments) based on user count to maintain realistic manager-to-report ratios.
-* **AI-Powered Content:** Integrated with **Google Gemini (Flash/Pro Model)** to generate context-aware, unique task titles and descriptions.
-* **Robust Fallback:** If no API key is provided, the system seamlessly switches to a high-fidelity **Mock Data** engine, ensuring the simulation always completes successfully.
-* **Data Integrity:** Enforces referential integrity, unique email constraints, and strict temporal logic (e.g., tasks cannot be completed before they are created).
+- Enterprise Scaling  
+  Automatically derives organizational structure (Departments, Squads)
+  based on total user count, maintaining realistic manager-to-report ratios.
+
+- AI-Powered Content Generation  
+  Integrated with Google Gemini (Flash / Pro models) to generate
+  context-aware, unique project names, task titles, and descriptions.
+
+- Robust Fallback Mode  
+  If no API key is provided, the system switches to a high-fidelity
+  mock data engine so the simulation always completes.
+
+- Strict Data Integrity  
+  Enforces referential integrity, unique corporate email constraints,
+  and temporal correctness (tasks cannot be completed before creation).
+
 
 ## Project Structure
 
 asana-generator/
 ├── src/
-│   ├── generators/       # Logic for creating Users, Projects, and Tasks
-│   ├── models/           # SQLAlchemy ORM definitions (Database Schema)
-│   ├── scrapers/         # Utility to fetch real company names
-│   ├── utils/            # Helper functions and Constants
-│   │   └── llm_client.py # Handles Google Gemini connection & Mock fallback
-│   └── main.py           # The Orchestrator script
-├── output/               # Generated .sqlite files will appear here
-├── check_db.py           # Script to verify database integrity
-├── requirements.txt      # Python dependencies
-└── .env                  # Environment variables (API Key) - YOU MUST CREATE THIS
+│   ├── generators/        # Logic for creating Users, Teams, Projects, Tasks
+│   ├── models/            # SQLAlchemy ORM models (database schema)
+│   ├── scrapers/          # Utilities for fetching real company names/domains
+│   ├── utils/             # Shared helpers and constants
+│   │   └── llm_client.py  # Google Gemini client with mock fallback
+│   └── main.py            # Orchestrator script
+├── output/                # Generated SQLite databases
+├── check_db.py            # Database integrity verification script
+├── requirements.txt       # Python dependencies
+└── .env                   # Environment variables (must be created manually)
+
 
 ## Setup & Installation
 
-### 1. Prerequisites
-* Python 3.8+
-* pip
+### Prerequisites
+- Python 3.8+
+- pip
 
-### 2. Install Dependencies
-Navigate to the project root and run:
+
+### Install Dependencies
+
+From the project root, run:
+
 pip install -r requirements.txt
 
-### 3. Configure AI Generation (CRITICAL STEP)
-This project uses **Google Gemini** for generating realistic text. While optional (fallback mock data is available), setting this up is highly recommended for realistic output.
 
-**Step A: Get a Free Key**
-Visit https://aistudio.google.com/app/apikey and create a new API key.
+## Configure AI Generation (Optional but Recommended)
 
-**Step B: Create the Configuration File**
-You must manually create a file named `.env` in the root folder of this project (next to `requirements.txt`).
+This project uses Google Gemini for realistic text generation.
+If no API key is provided, the system automatically falls back to mock data.
 
-**Step C: Add Your Key**
-Open the `.env` file and add exactly this line (replace with your actual key):
+
+### Step 1: Generate an API Key
+
+Create a free API key at:
+https://aistudio.google.com/app/apikey
+
+
+### Step 2: Create the .env File
+
+In the project root (next to requirements.txt), create a file named:
+
+.env
+
+
+### Step 3: Add the API Key
+
+Add exactly this line (replace with your key):
 
 GEMINI_API_KEY=your_google_api_key_here
 
-> **IMPORTANT:** > 1. The file name must be exactly `.env`.
-> 2. The variable name must be exactly `GEMINI_API_KEY`.
-> 3. Do not use quotes around the key.
+
+IMPORTANT:
+- File name must be exactly .env
+- Variable name must be GEMINI_API_KEY
+- Do not wrap the key in quotes
+
 
 ## Usage
 
-To start the simulation, run the main script:
+Run the main orchestrator script:
 
 python src/main.py
 
-**What happens next?**
-1.  **Organization Layer:** Creates a company and fetches real corporate domains.
-2.  **Team Scaling:** Dynamically creates ~400+ teams (Engineering, Marketing, Sales) to support the workforce.
-3.  **Hiring:** Generates 5,000 unique user profiles and assigns them to teams with correct roles (Admin vs Member).
-4.  **Work Generation:** Creates projects and populates them with tasks using AI (if key is valid) or Mock data.
-5.  **Output:** Saves the result to `output/asana_simulation.sqlite`.
+
+### What Happens Internally
+
+1. Organization Layer  
+   Creates a company and assigns realistic corporate domains.
+
+2. Team Scaling  
+   Dynamically generates 400+ teams
+   (Engineering, Sales, Marketing, etc.).
+
+3. User Generation  
+   Creates 5,000+ unique users and assigns them to teams
+   with correct roles (admin vs member).
+
+4. Work Simulation  
+   Generates projects, sections, and tasks using:
+   - Google Gemini (if API key is present)
+   - Mock data engine (fallback)
+
+5. Output  
+   Writes the final database to:
+
+output/asana_simulation.sqlite
+
 
 ## Verifying the Data
 
-Once the simulation finishes, you can verify the integrity of the data (5,000 users, team distribution, etc.) by running the included inspection script:
+To validate row counts, relationships, and constraints, run:
 
 python check_db.py
 
-Alternatively, you can inspect the file using any standard SQL viewer, such as DB Browser for SQLite.
+You can also inspect the database using DB Browser for SQLite.
+
 
 ## Database Schema Overview
 
-The generated SQLite database contains the following relational tables:
+The generated SQLite database includes the following tables:
 
-* **`organizations`**: The root entity.
-* **`teams`**: Functional groups linked to the organization.
-* **`users`**: Employees with unique emails and specific roles.
-* **`team_memberships`**: Junction table linking Users to Teams (Many-to-Many).
-* **`projects`**: Work containers owned by teams.
-* **`sections`**: Kanban columns (e.g., "To Do", "In Progress").
-* **`tasks`**: Individual work items with status, priority, and assignees.
+- organizations  
+  Root entity representing the customer workspace
+
+- teams  
+  Functional groups within the organization
+
+- users  
+  Employees with unique corporate emails and roles
+
+- team_memberships  
+  Junction table linking users and teams (many-to-many)
+
+- projects  
+  Work containers owned by teams
+
+- sections  
+  Kanban columns (To Do, In Progress, Done)
+
+- tasks  
+  Atomic work items with assignees, priority, and lifecycle timestamps
+
+- custom_field_definitions  
+  Metadata describing custom fields (EAV pattern)
+
+- custom_field_values  
+  Actual custom field values linked to tasks

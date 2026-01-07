@@ -36,8 +36,8 @@ asana-generator/
 │   ├── scrapers/          # Utilities for fetching real company names/domains
 │   ├── utils/             # Shared helpers and constants
 │   │   └── llm_client.py  # Google Gemini client with mock fallback
+│   ├── output/            # Generated SQLite databases
 │   └── main.py            # Orchestrator script
-├── output/                # Generated SQLite databases
 ├── check_db.py            # Database integrity verification script
 ├── requirements.txt       # Python dependencies
 └── .env                   # Environment variables (must be created manually)

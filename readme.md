@@ -28,7 +28,7 @@ workflows.
 
 
 ## Project Structure
-
+```text
 asana-generator/
 ├── src/
 │   ├── generators/        # Logic for creating Users, Teams, Projects, Tasks
@@ -41,7 +41,7 @@ asana-generator/
 ├── check_db.py            # Database integrity verification script
 ├── requirements.txt       # Python dependencies
 └── .env                   # Environment variables (must be created manually)
-
+```
 
 ## Setup & Installation
 

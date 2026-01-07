@@ -1,0 +1,25 @@
+# --- Python Standard ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Virtual Environments ---
+venv/
+.venv/
+env/
+.env/
+
+# --- Secrets (CRITICAL: KEEP THIS) ---
+.env
+
+# --- OS Files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- IDE Settings ---
+.vscode/
+.idea/
+
+# Note: We are explicitly allowing 'output/' and '*.sqlite' 
+# so the final database is included in the repo.
